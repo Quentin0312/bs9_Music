@@ -12,10 +12,11 @@ RUN apt-get update && apt-get install -y \
 
 # RUN git clone https://github.com/Quentin0312/deployed-streamlit-yolo.git .
 
-COPY . .
+COPY ./requirements.txt .
 
-# RUN pip3 install -r requirements.txt
-RUN pip install tensorflow
+RUN pip3 install -r requirements.txt
+
+COPY . .
 
 EXPOSE 8501
 

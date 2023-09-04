@@ -5,8 +5,9 @@ import librosa
 import numpy as np
 import pandas as pd
 import joblib
-import soundfile
-import audioread
+
+# import soundfile
+# import audioread
 from sklearn.preprocessing import StandardScaler as sc
 
 
@@ -60,8 +61,7 @@ def audio_to_csv(audio):
     features = audio_pipeline(audio)
 
     # Scale the features using the loaded scaler
-    scaled_features = scaler.transform([features]) 
-    
+    scaled_features = scaler.transform([features])
 
     # Create a DataFrame
     column_names = [
@@ -94,6 +94,7 @@ def audio_to_csv(audio):
 
     return df, scaled_features
 
+
 # Streamlit app
 st.title("Prédiction genre musical")
 
@@ -103,7 +104,7 @@ uploaded_file = st.file_uploader("Télécharger un fichier audio", type=["wav"])
 if uploaded_file is not None:
     # Load the trained model
     model = keras.models.load_model("./mymodelv1.keras")
-    
+
     # Load the StandardScaler used during training
     scaler = joblib.load("standard_scaler.pkl")  # Load the scaler from the saved file
 
@@ -122,4 +123,3 @@ if uploaded_file is not None:
     # Display prediction result
     st.write("Prediction:")
     st.write(pd.DataFrame([prediction[0]], columns=predicted_genres))
-
