@@ -65,12 +65,6 @@ genre_mapping = {
 def audio_pipeline(audio):
     features = []
 
-    # Calcul du ZCR (Zero Crossing Rate)
-    zcr = librosa.zero_crossings(audio)
-    features.append(np.sum(zcr))  # Custom
-    features.append(np.mean(zcr))
-    features.append(np.var(zcr))
-
     # Chromagram
     chroma_stft = librosa.feature.chroma_stft(y=audio)
     features.append(np.mean(chroma_stft))
@@ -95,6 +89,12 @@ def audio_pipeline(audio):
     rolloff = librosa.feature.spectral_rolloff(y=audio)
     features.append(np.mean(rolloff))
     features.append(np.var(rolloff))
+
+    # Calcul du ZCR (Zero Crossing Rate)
+    zcr = librosa.zero_crossings(audio)
+    # features.append(np.sum(zcr))  # Custom
+    features.append(np.mean(zcr))
+    features.append(np.var(zcr))
 
     # Harmonic
     harmony = librosa.effects.harmonic(y=audio)
@@ -144,9 +144,6 @@ def audio_to_csv(audio, scaler) -> List[pd.DataFrame]:
 
         # Create a DataFrame
         column_names = [
-            "zcr_sum",
-            "zcr_mean",
-            "zcr_var",
             "chroma_mean",
             "chroma_var",
             "rms_mean",
@@ -157,6 +154,9 @@ def audio_to_csv(audio, scaler) -> List[pd.DataFrame]:
             "spectral_bandwith_var",
             "rolloff_mean",
             "rolloff_var",
+            # "zcr_sum",
+            "zcr_mean",
+            "zcr_var",
             "harmonic_mean",
             "harmonic_var",
             "tempo",
@@ -230,12 +230,14 @@ if uploaded_file is not None:
         st.write(df)
 
     # Load the trained model
-    my_model = MusicClassifier(input_features=57, output_features=10)
-    my_model.load_state_dict(torch.load(f="./my_pytorch_model.pth"))
+    my_model = MusicClassifier(input_features=55, output_features=10)
+    my_model.load_state_dict(
+        torch.load(f="./my_pytorch_model.pth", map_location=torch.device("cpu"))
+    )
 
     my_model.eval()
     for df in dfs:
-        y_logits = my_model(df.to_numpy())
+        y_logits = my_model(torch.from_numpy(df.to_numpy()).type(torch.float32))
         y_pred = torch.softmax(y_logits, dim=1).argmax(dim=1)
         st.write(y_pred)
 
