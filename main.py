@@ -9,6 +9,10 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from typing import List
+
+# ! Device agnostic code ?
+
 
 class MusicClassifier(nn.Module):
     def __init__(self, input_features, output_features):
@@ -127,7 +131,7 @@ def get_3sec_sample(audio) -> list:
 
 
 # ! Refactoriser / découper !
-def audio_to_csv(audio, scaler):
+def audio_to_csv(audio, scaler) -> List[pd.DataFrame]:
     dfs = []
     segments = get_3sec_sample(audio)
 
@@ -211,12 +215,6 @@ st.title("Prédiction genre musical")
 uploaded_file = st.file_uploader("Télécharger un fichier audio", type=["wav"])
 
 if uploaded_file is not None:
-    # Load the trained model
-    # ! Load pytorch model
-    my_model = MusicClassifier()
-    my_model.load_state_dict(torch.load(f="./my_pytorch_model.pth"))
-    # model = keras.models.load_model("./mymodelv1.keras")
-
     # Load the StandardScaler used during training
     scaler = joblib.load(
         "standard_scaler_pytorch_model_last.pkl"
@@ -230,6 +228,16 @@ if uploaded_file is not None:
     st.write("Audio Features:")
     for df in dfs:
         st.write(df)
+
+    # Load the trained model
+    my_model = MusicClassifier(input_features=57, output_features=10)
+    my_model.load_state_dict(torch.load(f="./my_pytorch_model.pth"))
+
+    my_model.eval()
+    for df in dfs:
+        y_logits = my_model(df.to_numpy())
+        y_pred = torch.softmax(y_logits, dim=1).argmax(dim=1)
+        st.write(y_pred)
 
     # Perform model prediction
     # prediction = model.predict(scaled_features)
