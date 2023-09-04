@@ -141,8 +141,8 @@ def audio_pipeline(audio):
 
 
 def get_3sec_sample(audio) -> list:
-    # ! Vérif
-    # ! Rewrite
+    # TODO Vérif
+    # TODO Rewrite
     audio, sample_rate = librosa.load(audio, sr=None)
 
     segment_duration = 3  # Durée de chaque segment en secondes

@@ -58,7 +58,7 @@ def predict(dfs):
         torch.load(f="./my_pytorch_model.pth", map_location=torch.device("cpu"))
     )
 
-    # ! Rewrite
+    # TODO Rewrite
     # Evaluation mode
     my_model.eval()
     class_predictions = []

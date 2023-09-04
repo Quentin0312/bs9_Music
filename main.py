@@ -4,9 +4,9 @@ from model import predict
 from preprocessing import audio_to_csv
 from components import dataframe_toggler
 
-# ! Rename things
-# ! Put pytorch save dict and scaler in a specific folder !
-# ! Device agnostic code ?
+# TODO Rename things
+# TODO Put pytorch save dict and scaler in a specific folder !
+# TODO Device agnostic code ?
 
 
 # Streamlit app ------------------------------------------------------------------------
@@ -15,7 +15,7 @@ st.title("Prédiction genre musical")
 # File upload
 uploaded_file = st.file_uploader(
     "Télécharger un fichier audio", type=["wav"]
-)  # ! Add mp3 !?
+)  # TODO Add mp3 !?
 
 
 if uploaded_file is not None:
