@@ -77,5 +77,10 @@ def predict(dfs):
         class_predictions.append(genre_mapping[y_pred.detach().numpy()[0]])
 
     unique_values = set(class_predictions)
+    actual_best = 0
     for elt in unique_values:
+        if class_predictions.count(elt) > actual_best:
+            prediction = elt
         st.write(elt, class_predictions.count(elt))
+
+    return prediction
