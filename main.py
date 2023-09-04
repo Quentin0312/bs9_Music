@@ -1,9 +1,46 @@
 import streamlit as st
 
+import torch
+from torch import nn
+
 import librosa
+import joblib
+
 import numpy as np
 import pandas as pd
-import joblib
+
+
+class MusicClassifier(nn.Module):
+    def __init__(self, input_features, output_features):
+        super().__init__()
+        self.linear_layer_stack = nn.Sequential(
+            nn.Linear(
+                in_features=input_features, out_features=2048, dtype=torch.float32
+            ),
+            nn.GELU(),
+            nn.Dropout(p=0.6),
+            nn.Linear(in_features=2048, out_features=1024, dtype=torch.float32),
+            nn.GELU(),
+            nn.Dropout(p=0.6),
+            nn.Linear(in_features=1024, out_features=512, dtype=torch.float32),
+            nn.GELU(),
+            nn.Dropout(p=0.6),
+            nn.Linear(in_features=512, out_features=256, dtype=torch.float32),
+            nn.GELU(),
+            nn.Dropout(p=0.6),
+            nn.Linear(in_features=256, out_features=128, dtype=torch.float32),
+            nn.GELU(),
+            nn.Dropout(p=0.6),
+            nn.Linear(in_features=128, out_features=64, dtype=torch.float32),
+            nn.GELU(),
+            nn.Dropout(p=0.6),
+            nn.Linear(
+                in_features=64, out_features=output_features, dtype=torch.float32
+            ),
+        )
+
+    def forward(self, x):
+        return self.linear_layer_stack(x)
 
 
 # Create a mapping from numerical values to genre names
@@ -176,6 +213,8 @@ uploaded_file = st.file_uploader("Télécharger un fichier audio", type=["wav"])
 if uploaded_file is not None:
     # Load the trained model
     # ! Load pytorch model
+    my_model = MusicClassifier()
+    my_model.load_state_dict(torch.load(f="./my_pytorch_model.pth"))
     # model = keras.models.load_model("./mymodelv1.keras")
 
     # Load the StandardScaler used during training
