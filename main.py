@@ -221,13 +221,14 @@ if uploaded_file is not None:
     )  # Load the scaler from the saved file
 
     # Perform audio processing and get DataFrame and scaled features
-    # ! Cut the audio with 3 sec samples
     dfs = audio_to_csv(uploaded_file, scaler)
 
     # Display the DataFrame
-    st.write("Audio Features:")
-    for df in dfs:
-        st.write(df)
+    data_toggler = st.toggle("Show audio extracted features")
+    if data_toggler:
+        st.write("Audio Extracted Features:")
+        for df in dfs:
+            st.write(df)
 
     # Load the trained model
     my_model = MusicClassifier(input_features=55, output_features=10)
@@ -239,13 +240,4 @@ if uploaded_file is not None:
     for df in dfs:
         y_logits = my_model(torch.from_numpy(df.to_numpy()).type(torch.float32))
         y_pred = torch.softmax(y_logits, dim=1).argmax(dim=1)
-        st.write(y_pred)
-
-    # Perform model prediction
-    # prediction = model.predict(scaled_features)
-
-    # predicted_genres = [genre_mapping[i] for i in range(len(prediction[0]))]
-
-    # Display prediction result
-    # st.write("Prediction:")
-    # st.write(pd.DataFrame([prediction[0]], columns=predicted_genres))
+        st.write(genre_mapping[y_pred.detach().numpy()[0]])
