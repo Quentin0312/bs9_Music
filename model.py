@@ -1,6 +1,22 @@
 from torch import nn
 import torch
 
+import streamlit as st
+
+
+genre_mapping = {
+    0: "Blues",
+    1: "Classical",
+    2: "Country",
+    3: "Disco",
+    4: "Hiphop",
+    5: "Jazz",
+    6: "Metal",
+    7: "Pop",
+    8: "Reggae",
+    9: "Rock",
+}
+
 
 class MusicClassifier(nn.Module):
     def __init__(self, input_features, output_features):
@@ -33,3 +49,25 @@ class MusicClassifier(nn.Module):
 
     def forward(self, x):
         return self.linear_layer_stack(x)
+
+
+def predict(dfs):
+    # Load the trained model
+    my_model = MusicClassifier(input_features=55, output_features=10)
+    my_model.load_state_dict(
+        torch.load(f="./my_pytorch_model.pth", map_location=torch.device("cpu"))
+    )
+
+    # ! Rewrite
+    # Evaluation mode
+    my_model.eval()
+    class_predictions = []
+    for df in dfs:
+        y_logits = my_model(torch.from_numpy(df.to_numpy()).type(torch.float32))
+        y_pred = torch.softmax(y_logits, dim=1).argmax(dim=1)
+        # st.write(genre_mapping[y_pred.detach().numpy()[0]])
+        class_predictions.append(genre_mapping[y_pred.detach().numpy()[0]])
+
+    unique_values = set(class_predictions)
+    for elt in unique_values:
+        st.write(elt, class_predictions.count(elt))
