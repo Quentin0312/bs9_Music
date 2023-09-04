@@ -1,12 +1,11 @@
 import streamlit as st
 
-from model import predict
-from preprocessing import audio_to_csv
-from components import dataframe_toggler
+from modules.model import predict
+from modules.preprocessing import audio_to_csv
+from modules.components import dataframe_toggler
 
 # TODO Rename things
-# TODO Put pytorch save dict and scaler in a specific folder !
-# TODO Device agnostic code ?
+# TODO Check librosa printed warnings
 
 
 # Streamlit app ------------------------------------------------------------------------

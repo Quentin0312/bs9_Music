@@ -3,6 +3,11 @@ import torch
 
 import streamlit as st
 
+"""
+No device agnostic code because CUDA
+will not be available in deployement environnement
+"""
+
 
 genre_mapping = {
     0: "Blues",
@@ -55,7 +60,9 @@ def predict(dfs):
     # Load the trained model
     my_model = MusicClassifier(input_features=55, output_features=10)
     my_model.load_state_dict(
-        torch.load(f="./my_pytorch_model.pth", map_location=torch.device("cpu"))
+        torch.load(
+            f="./resources/my_pytorch_model.pth", map_location=torch.device("cpu")
+        )
     )
 
     # TODO Rewrite

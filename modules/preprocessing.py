@@ -8,7 +8,7 @@ import pandas as pd
 from typing import List
 
 # Load the StandardScaler used during training
-scaler = joblib.load("standard_scaler_pytorch_model_last.pkl")
+scaler = joblib.load("./resources/standard_scaler_pytorch_model_last.pkl")
 
 
 def audio_to_csv(audio) -> List[pd.DataFrame]:
