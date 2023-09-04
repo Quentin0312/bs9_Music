@@ -3,6 +3,8 @@ import streamlit as st
 import torch
 from torch import nn
 
+from model import MusicClassifier
+
 import librosa
 import joblib
 
@@ -12,39 +14,6 @@ import pandas as pd
 from typing import List
 
 # ! Device agnostic code ?
-
-
-class MusicClassifier(nn.Module):
-    def __init__(self, input_features, output_features):
-        super().__init__()
-        self.linear_layer_stack = nn.Sequential(
-            nn.Linear(
-                in_features=input_features, out_features=2048, dtype=torch.float32
-            ),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=2048, out_features=1024, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=1024, out_features=512, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=512, out_features=256, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=256, out_features=128, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=128, out_features=64, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(
-                in_features=64, out_features=output_features, dtype=torch.float32
-            ),
-        )
-
-    def forward(self, x):
-        return self.linear_layer_stack(x)
 
 
 # Create a mapping from numerical values to genre names
@@ -208,22 +177,22 @@ def audio_to_csv(audio, scaler) -> List[pd.DataFrame]:
     return dfs
 
 
-# Streamlit app
+# Streamlit app ------------------------------------------------------------------------
 st.title("Prédiction genre musical")
 
 # Add interactive components for file upload
-uploaded_file = st.file_uploader("Télécharger un fichier audio", type=["wav"])
+uploaded_file = st.file_uploader(
+    "Télécharger un fichier audio", type=["wav"]
+)  # ! Add mp3 !?
 
 if uploaded_file is not None:
     # Load the StandardScaler used during training
-    scaler = joblib.load(
-        "standard_scaler_pytorch_model_last.pkl"
-    )  # Load the scaler from the saved file
+    scaler = joblib.load("standard_scaler_pytorch_model_last.pkl")
 
-    # Perform audio processing and get DataFrame and scaled features
+    # Perform audio processing
     dfs = audio_to_csv(uploaded_file, scaler)
 
-    # Display the DataFrame
+    # Display dataframes
     data_toggler = st.toggle("Show audio extracted features")
     if data_toggler:
         st.write("Audio Extracted Features:")
@@ -241,7 +210,9 @@ if uploaded_file is not None:
     for df in dfs:
         y_logits = my_model(torch.from_numpy(df.to_numpy()).type(torch.float32))
         y_pred = torch.softmax(y_logits, dim=1).argmax(dim=1)
-        st.write(genre_mapping[y_pred.detach().numpy()[0]])
+        # st.write(genre_mapping[y_pred.detach().numpy()[0]])
         class_predictions.append(genre_mapping[y_pred.detach().numpy()[0]])
 
-    st.write(f"Prédiction: {set(class_predictions)}")
+    unique_values = set(class_predictions)
+    for elt in unique_values:
+        st.write(elt, class_predictions.count(elt))
