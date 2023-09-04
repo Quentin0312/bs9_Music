@@ -61,13 +61,14 @@ def predict(dfs):
     my_model = MusicClassifier(input_features=55, output_features=10)
     my_model.load_state_dict(
         torch.load(
-            f="./resources/my_pytorch_model.pth", map_location=torch.device("cpu")
+            f="./resources/actual_pytorch_model.pth", map_location=torch.device("cpu")
         )
     )
 
     # TODO Rewrite
     # Evaluation mode
     my_model.eval()
+
     class_predictions = []
     for df in dfs:
         y_logits = my_model(torch.from_numpy(df.to_numpy()).type(torch.float32))
