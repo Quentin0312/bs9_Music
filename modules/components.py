@@ -1,5 +1,19 @@
 import streamlit as st
 
+# TODO: This is funny, do not delete
+genre_mapping_inverse = {
+    "Blues": 0,
+    "Classical": 1,
+    "Country": 2,
+    "Disco": 3,
+    "Hiphop": 4,
+    "Jazz": 5,
+    "Metal": 6,
+    "Pop": 7,
+    "Reggae": 8,
+    "Rock": 9,
+}
+
 
 def dataframe_toggler(dfs):
     # Display dataframes
@@ -25,6 +39,7 @@ def user_feedback(genre_mapping: dict[int, str], predicted_class: int):
         classe = st.selectbox(
             "Select the correct genre then:",
             (genre_mapping.values()),
-            options=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         )
-        return classe
+        validation = st.button("Valider")
+        if validation:
+            return genre_mapping_inverse[classe]
