@@ -70,10 +70,16 @@ def predict(dfs):
     my_model.eval()
 
     class_predictions = []
+    raw_results = []
     for df in dfs:
         y_logits = my_model(torch.from_numpy(df.to_numpy()).type(torch.float32))
-        y_pred = torch.softmax(y_logits, dim=1).argmax(dim=1)
-        # st.write(genre_mapping[y_pred.detach().numpy()[0]])
+        y_softmax = torch.softmax(y_logits, dim=1)
+        y_pred = y_softmax.argmax(dim=1)
+
+        st.write(genre_mapping[y_pred.detach().numpy()[0]])
+        st.write(list(torch.round(y_softmax * 1000) / 1000))
+
+        raw_results.append(y_softmax)
         class_predictions.append(genre_mapping[y_pred.detach().numpy()[0]])
 
     unique_values = set(class_predictions)
