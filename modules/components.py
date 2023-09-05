@@ -24,22 +24,12 @@ def dataframe_toggler(dfs):
             st.write(df)
 
 
-def user_feedback(genre_mapping: dict[int, str], predicted_class: int):
-    # Feedback utilisateur
-    st.write("Was that good ?")
-    feedback_yes = st.button("Yes, of course")
-    feedback_no = st.button("Hell no wtf ?!")
-
-    if feedback_yes:
-        st.write("Thanks for the feedback")
-        return predicted_class
-
-    # TODO: Fix
-    elif feedback_no:
-        classe = st.selectbox(
+def user_feedback(genre_mapping: dict[int, str]):
+    with st.form("User feedback"):
+        real_class = st.selectbox(
             "Select the correct genre then:",
             (genre_mapping.values()),
         )
-        validation = st.button("Valider")
-        if validation:
-            return genre_mapping_inverse[classe]
+        submit = st.form_submit_button("Valider")
+
+    return submit, real_class
