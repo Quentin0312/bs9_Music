@@ -3,6 +3,7 @@ import streamlit as st
 from modules.model import predict, genre_mapping
 from modules.preprocessing import audio_to_csv
 from modules.components import dataframe_toggler, user_feedback
+from modules.training import concat_dfs
 
 # TODO Rename things
 # TODO Check librosa printed warnings
@@ -28,6 +29,7 @@ if uploaded_file is not None:
     predicted_class = predict(dfs)
 
     # Feedback utilisateur
-    classe = user_feedback(genre_mapping)
-
-    # Nouvel entrainement (sytématique)
+    classe = user_feedback(genre_mapping, predicted_class)
+    if classe:
+        # Nouvel entrainement (sytématique)
+        concat_dfs(dfs, classe)

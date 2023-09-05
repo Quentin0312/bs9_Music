@@ -8,7 +8,6 @@ No device agnostic code because CUDA
 will not be available in deployement environnement
 """
 
-
 genre_mapping = {
     0: "Blues",
     1: "Classical",
@@ -20,6 +19,19 @@ genre_mapping = {
     7: "Pop",
     8: "Reggae",
     9: "Rock",
+}
+# TODO: This is funny, do not delete
+genre_mapping_inverse = {
+    "Blues": 0,
+    "Classical": 1,
+    "Country": 2,
+    "Disco": 3,
+    "Hiphop": 4,
+    "Jazz": 5,
+    "Metal": 6,
+    "Pop": 7,
+    "Reggae": 8,
+    "Rock": 9,
 }
 
 
@@ -83,4 +95,4 @@ def predict(dfs):
             prediction = elt
         st.write(elt, class_predictions.count(elt))
 
-    return prediction
+    return genre_mapping_inverse[prediction]
