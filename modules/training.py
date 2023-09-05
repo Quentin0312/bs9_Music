@@ -103,7 +103,7 @@ def training_loop(MusicClassifier):
     model = MusicClassifier(input_features=55, output_features=10)
 
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.011)
 
     def accuracy_fn(y_true, y_pred):
         correct = (
@@ -124,7 +124,7 @@ def training_loop(MusicClassifier):
 
     # Training loop
     torch.manual_seed(42)
-    epochs = 300
+    epochs = 125
     for epoch in range(epochs):
         debut_time = time.time()
         """

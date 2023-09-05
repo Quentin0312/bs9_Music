@@ -40,27 +40,15 @@ class MusicClassifier(nn.Module):
         super().__init__()
         self.linear_layer_stack = nn.Sequential(
             nn.Linear(
-                in_features=input_features, out_features=2048, dtype=torch.float32
+                in_features=input_features, out_features=256, dtype=torch.float32
             ),
             nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=2048, out_features=1024, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=1024, out_features=512, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=512, out_features=256, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
+            nn.Dropout(p=0.2),
             nn.Linear(in_features=256, out_features=128, dtype=torch.float32),
             nn.GELU(),
-            nn.Dropout(p=0.6),
-            nn.Linear(in_features=128, out_features=64, dtype=torch.float32),
-            nn.GELU(),
-            nn.Dropout(p=0.6),
+            nn.Dropout(p=0.2),
             nn.Linear(
-                in_features=64, out_features=output_features, dtype=torch.float32
+                in_features=128, out_features=output_features, dtype=torch.float32
             ),
         )
 
@@ -73,7 +61,7 @@ def predict(dfs):
     my_model = MusicClassifier(input_features=55, output_features=10)
     my_model.load_state_dict(
         torch.load(
-            f="./resources/actual_pytorch_model.pth", map_location=torch.device("cpu")
+            f="./resources/actual_model_fast.pth", map_location=torch.device("cpu")
         )
     )
 
