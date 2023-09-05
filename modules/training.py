@@ -90,7 +90,6 @@ def concat_dfs(dfs: List[pd.DataFrame], predicted_class):
     concatened_dataset = pd.concat([original_df, new_df], axis=0)
     # st.write(len(concatened_dataset))
     # st.write(concatened_dataset[9985:])
-    st.write("fin concat")
 
     concatened_dataset.to_csv("/app/resources/actual_dataset.csv", index=False)
 
@@ -125,7 +124,7 @@ def training_loop(MusicClassifier):
     # Training loop
     torch.manual_seed(42)
     epochs = 125
-    for epoch in range(epochs):
+    for epoch in range(epochs + 1):
         debut_time = time.time()
         """
         Train
@@ -172,8 +171,8 @@ def training_loop(MusicClassifier):
             # test_acc_history.append(test_acc)
 
         # Print out what's happening
-        # if epoch % 100 == 0:
-        st.write(
-            f"Epoch: {epoch} | Loss: {loss:.5f}, Acc: {acc:.2f}% | Test Loss: {test_loss:.5f}, Test Acc: {test_acc:.2f}%"
-        )
-        st.write(f"duration: {time.time() - debut_time}")
+        if epoch % 25 == 0:
+            st.write(
+                f"Epoch: {epoch} | Loss: {loss:.5f}, Acc: {acc:.2f}% | Test Loss: {test_loss:.5f}, Test Acc: {test_acc:.2f}%"
+            )
+            st.write(f"duration: {time.time() - debut_time}")
