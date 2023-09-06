@@ -1,3 +1,5 @@
 myenv
 .venv
 __pycache__
+extra_music
+extra_music_old
