@@ -61,7 +61,7 @@ def predict(dfs):
     my_model = MusicClassifier(input_features=55, output_features=10)
     my_model.load_state_dict(
         torch.load(
-            f="./resources/actual_model_fast.pth", map_location=torch.device("cpu")
+            f="/app/resources/actual_model_fast.pth", map_location=torch.device("cpu")
         )
     )
 
@@ -87,6 +87,7 @@ def predict(dfs):
     for elt in unique_values:
         if class_predictions.count(elt) > actual_best:
             prediction = elt
+            actual_best = class_predictions.count(elt)
         st.write(elt, class_predictions.count(elt))
 
     return genre_mapping_inverse[prediction]
